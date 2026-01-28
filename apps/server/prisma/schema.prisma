@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// User & Team Models
+// ============================================
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  teamId    String?
+  team      Team?    @relation(fields: [teamId], references: [id])
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  submissions Submission[]
+
+  @@index([teamId])
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  score     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members     User[]
+  submissions Submission[]
+  matchesA    Match[]      @relation("TeamA")
+  matchesB    Match[]      @relation("TeamB")
+  matchWins   Match[]      @relation("Winner")
+}
+
+// ============================================
+// Game Models
+// ============================================
+
+model Problem {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  difficulty  String   // easy, medium, hard
+  testCases   String   // JSON array of test cases
+  solution    String   // Reference solution
+  gameType    String   // deadlock, crack-the-code
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  submissions Submission[]
+  rounds      Round[]
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  gameType  String   // deadlock, crack-the-code
+  status    String   @default("waiting") // waiting, active, completed
+  teamAId   String?
+  teamBId   String?
+  winnerId  String?
+  teamA     Team?    @relation("TeamA", fields: [teamAId], references: [id])
+  teamB     Team?    @relation("TeamB", fields: [teamBId], references: [id])
+  winner    Team?    @relation("Winner", fields: [winnerId], references: [id])
+  startedAt DateTime?
+  endedAt   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rounds      Round[]
+  submissions Submission[]
+
+  @@index([teamAId])
+  @@index([teamBId])
+  @@index([winnerId])
+}
+
+model Round {
+  id        String   @id @default(uuid())
+  matchId   String
+  match     Match    @relation(fields: [matchId], references: [id])
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id])
+  roundNum  Int
+  status    String   @default("pending") // pending, active, completed
+  startedAt DateTime?
+  endedAt   DateTime?
+  createdAt DateTime @default(now())
+
+  submissions Submission[]
+
+  @@index([matchId])
+  @@index([problemId])
+}
+
+model Submission {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+  matchId   String
+  match     Match    @relation(fields: [matchId], references: [id])
+  roundId   String?
+  round     Round?   @relation(fields: [roundId], references: [id])
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id])
+  code      String
+  language  String
+  status    String   @default("pending") // pending, running, accepted, wrong_answer, error
+  runtime   Int?     // in milliseconds
+  memory    Int?     // in MB
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([teamId])
+  @@index([matchId])
+  @@index([roundId])
+  @@index([problemId])
+}
