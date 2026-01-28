@@ -11,14 +11,15 @@
     },
     "dependencies": {
         "@deadlock/shared": "*",
+        "@monaco-editor/react": "^4.7.0",
+        "clsx": "^2.1.0",
+        "lucide-react": "^0.314.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-hot-toast": "^2.6.0",
         "react-router-dom": "^6.21.3",
-        "socket.io-client": "^4.7.4",
-        "zustand": "^4.5.0",
-        "@monaco-editor/react": "^4.6.0",
-        "clsx": "^2.1.0",
-        "lucide-react": "^0.314.0"
+        "socket.io-client": "^4.8.3",
+        "zustand": "^4.5.0"
     },
     "devDependencies": {
         "@types/react": "^18.2.48",

@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   server: {
+    host: true, // Enable LAN access
     port: 5173,
     proxy: {
       '/api': {

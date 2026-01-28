@@ -4,6 +4,7 @@ import { HomePage } from '@/pages/HomePage';
 import { LobbyPage } from '@/pages/LobbyPage';
 import { DeadLockPage } from '@/pages/DeadLockPage';
 import { CrackTheCodePage } from '@/pages/CrackTheCodePage';
+import { AdminProjectorPage } from '@/pages/AdminProjectorPage';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                     <Route path="lobby/:gameId" element={<LobbyPage />} />
                     <Route path="deadlock/:matchId" element={<DeadLockPage />} />
                     <Route path="crack-the-code/:matchId" element={<CrackTheCodePage />} />
+                    <Route path="admin/projector/:matchId" element={<AdminProjectorPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

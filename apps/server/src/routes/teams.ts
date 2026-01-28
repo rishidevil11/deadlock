@@ -68,6 +68,30 @@ teamsRouter.post('/', async (req, res) => {
     }
 });
 
+// Join team
+teamsRouter.post('/:id/join', async (req, res) => {
+    try {
+        const { userId } = req.body; // In a real app, get from auth middleware
+
+        const team = await prisma.team.findUnique({
+            where: { id: req.params.id },
+        });
+
+        if (!team) return res.status(404).json({ error: 'Team not found' });
+
+        const user = await prisma.user.update({
+            where: { id: userId },
+            data: { teamId: team.id },
+            include: { team: true }
+        });
+
+        res.json(user);
+    } catch (error) {
+        console.error('Join team error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Leaderboard
 teamsRouter.get('/leaderboard/all', async (_req, res) => {
     try {

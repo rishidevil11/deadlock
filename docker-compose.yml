@@ -36,7 +36,20 @@ services:
       - DATABASE_URL=file:./dev.db
       - JWT_SECRET=docker-dev-secret-change-in-production
       - CORS_ORIGIN=http://localhost:5173
+      - JUDGE_SERVER_URL=http://judge-server:8080
+      - JUDGE_SERVER_TOKEN=your-judge-server-token
     command: npm run dev:server
+
+  # QingdaoU JudgeServer
+  judge-server:
+    image: criyle/go-judge:latest
+    ports:
+      - "12358:5050"
+    volumes:
+      - ./run:/run
+    privileged: true
+    restart: always
+
 
 volumes:
   node_modules:

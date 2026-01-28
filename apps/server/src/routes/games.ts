@@ -60,15 +60,42 @@ gamesRouter.post('/matches', async (req, res) => {
     try {
         const { gameType, teamAId, teamBId } = req.body;
 
+        // Get a random problem for this game type
+        const problems = await prisma.problem.findMany({
+            where: { gameType: gameType === 'deadlock' ? 'deadlock' : 'crack-the-code' },
+            take: 5,
+        });
+
+        if (problems.length === 0) {
+            return res.status(400).json({ error: 'No problems found. Run npm run db:seed first.' });
+        }
+
+        // Pick a random problem
+        const problem = problems[Math.floor(Math.random() * problems.length)];
+
+        // Create match with first round
         const match = await prisma.match.create({
             data: {
                 gameType,
                 teamAId,
                 teamBId,
+                status: 'active',
+                startedAt: new Date(),
+                rounds: {
+                    create: {
+                        roundNum: 1,
+                        problemId: problem.id,
+                        status: 'active',
+                        startedAt: new Date(),
+                    }
+                }
             },
             include: {
                 teamA: true,
                 teamB: true,
+                rounds: {
+                    include: { problem: true }
+                }
             },
         });
 
