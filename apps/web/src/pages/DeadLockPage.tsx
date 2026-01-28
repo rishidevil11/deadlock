@@ -286,8 +286,8 @@ function twoSum(nums, target) {
                         <div className="p-6">
                             <div className="mb-4 flex items-center gap-2">
                                 <span className={`px-3 py-1 text-xs font-bold rounded-full ${gameState.problem.difficulty === 'easy' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                                        gameState.problem.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
-                                            'bg-red-500/20 text-red-400 border border-red-500/30'
+                                    gameState.problem.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                                        'bg-red-500/20 text-red-400 border border-red-500/30'
                                     }`}>
                                     {gameState.problem.difficulty.toUpperCase()}
                                 </span>
@@ -381,10 +381,12 @@ function twoSum(nums, target) {
                             <select
                                 value={language}
                                 onChange={(e) => setLanguage(e.target.value)}
-                                className="input py-2 w-40 bg-dark-900 border-dark-600"
+                                className="input py-2 w-44 bg-dark-900 border-dark-600"
                             >
                                 <option value="javascript">JavaScript</option>
                                 <option value="python">Python</option>
+                                <option value="cpp">C++</option>
+                                <option value="java">Java</option>
                             </select>
                         </div>
                         <div className="flex items-center gap-3">

@@ -5,6 +5,7 @@ import { LobbyPage } from '@/pages/LobbyPage';
 import { DeadLockPage } from '@/pages/DeadLockPage';
 import { CrackTheCodePage } from '@/pages/CrackTheCodePage';
 import { AdminProjectorPage } from '@/pages/AdminProjectorPage';
+import { AdminDashboardPage } from '@/pages/AdminDashboardPage';
 
 function App() {
     return (
@@ -15,8 +16,10 @@ function App() {
                     <Route path="lobby/:gameId" element={<LobbyPage />} />
                     <Route path="deadlock/:matchId" element={<DeadLockPage />} />
                     <Route path="crack-the-code/:matchId" element={<CrackTheCodePage />} />
-                    <Route path="admin/projector/:matchId" element={<AdminProjectorPage />} />
                 </Route>
+                {/* Admin routes - outside Layout for fullscreen view */}
+                <Route path="admin/dashboard" element={<AdminDashboardPage />} />
+                <Route path="admin/projector/:matchId" element={<AdminProjectorPage />} />
             </Routes>
         </BrowserRouter>
     );

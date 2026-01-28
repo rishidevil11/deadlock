@@ -10,6 +10,7 @@ import { teamsRouter } from './routes/teams.js';
 import { gamesRouter } from './routes/games.js';
 import { problemsRouter } from './routes/problems.js';
 import { submissionsRouter } from './routes/submissions.js';
+import { adminRouter } from './routes/admin.js';
 import { setupSocketHandlers } from './socket/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -45,6 +46,7 @@ app.use('/api/teams', teamsRouter);
 app.use('/api/games', gamesRouter);
 app.use('/api/problems', problemsRouter);
 app.use('/api/submissions', submissionsRouter);
+app.use('/api/admin', adminRouter);
 
 // Error handling
 app.use(errorHandler);

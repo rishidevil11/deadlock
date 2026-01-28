@@ -9,32 +9,39 @@ submissionsRouter.post('/', async (req, res) => {
     try {
         const { userId, teamId, matchId, roundId, problemId, code, language } = req.body;
 
-        // Create submission
+        // Validate required fields
+        if (!problemId) {
+            return res.status(400).json({ error: 'Problem ID is required' });
+        }
+        if (!code || code.trim().length === 0) {
+            return res.status(400).json({ error: 'Code is required' });
+        }
+        if (!language) {
+            return res.status(400).json({ error: 'Language is required' });
+        }
+
+        // Get problem for test cases FIRST (before creating submission)
+        const problem = await prisma.problem.findUnique({
+            where: { id: problemId },
+        });
+
+        if (!problem) {
+            return res.status(400).json({ error: 'Problem not found' });
+        }
+
+        // Create submission (allow null userId/teamId for anonymous testing)
         const submission = await prisma.submission.create({
             data: {
-                userId,
-                teamId,
-                matchId,
-                roundId,
+                userId: userId || null,
+                teamId: teamId || null,
+                matchId: matchId || null,
+                roundId: roundId || null,
                 problemId,
                 code,
                 language,
                 status: 'running',
             },
         });
-
-        // Get problem for test cases
-        const problem = await prisma.problem.findUnique({
-            where: { id: problemId },
-        });
-
-        if (!problem) {
-            await prisma.submission.update({
-                where: { id: submission.id },
-                data: { status: 'error' },
-            });
-            return res.status(400).json({ error: 'Problem not found' });
-        }
 
         // Execute code against test cases
         const testCases = JSON.parse(problem.testCases);
@@ -62,7 +69,7 @@ submissionsRouter.post('/', async (req, res) => {
         });
     } catch (error) {
         console.error('Submit code error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: error instanceof Error ? error.message : 'Internal server error' });
     }
 });
 
