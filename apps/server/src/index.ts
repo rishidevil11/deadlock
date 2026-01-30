@@ -21,8 +21,10 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-        methods: ['GET', 'POST'],
+        origin: process.env.NODE_ENV === 'production'
+            ? process.env.CORS_ORIGIN
+            : (origin, callback) => callback(null, true), // Allow all in dev
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
         credentials: true,
     },
 });
@@ -30,7 +32,9 @@ const io = new Server(httpServer, {
 // Middleware
 app.use(helmet());
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: process.env.NODE_ENV === 'production'
+        ? process.env.CORS_ORIGIN
+        : true, // Allow all in dev (reflects origin)
     credentials: true,
 }));
 app.use(express.json());

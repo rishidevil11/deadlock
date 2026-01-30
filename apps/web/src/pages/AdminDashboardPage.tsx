@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, Plus, Trash2, ArrowRight, RefreshCw, Play, Settings, UserPlus, X } from 'lucide-react';
 
 interface User {
@@ -15,14 +16,20 @@ interface Team {
 }
 
 export function AdminDashboardPage() {
+    const navigate = useNavigate();
     const [teams, setTeams] = useState<Team[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [newTeamName, setNewTeamName] = useState('');
     const [draggedUser, setDraggedUser] = useState<User | null>(null);
 
     useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user.isAdmin) {
+            navigate('/');
+            return;
+        }
         fetchData();
-    }, []);
+    }, [navigate]);
 
     const fetchData = async () => {
         try {
